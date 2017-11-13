@@ -1,8 +1,36 @@
 # Changelog
 
+## 1.7.0 (2017-9-11)
+* Enhancements
+  * Add `add/1`, `all_recipients/3`, and `delete_recipient/2` to `SendGrid.Contacts.Lists`
+  * Remove compile warnings for `Phoenix.View`
+
+## 1.6.0 (2017-7-14)
+* Enhancements
+  * Relax dependency versions
+  * add `put_phoenix_layout/2` in `SendGrid.Email` to render views in
+* Breaking Changes
+  * `put_phoenix_template/3` now expects an atom for implicit template rendering
+
+## 1.5.0 (2017-7-3)
+* Enhancements
+  * update docs
+  * upgrade to Elixir 1.4
+  * add support for Phoenix Views
+
+## 1.4.0 (2017-2-15)
+* Enhancements
+  * update `httpoison` to 0.11.0 and `poison` to 3.0
+  * clean up compiler warnings when using Elixir 1.3
+
+## 1.3.0 (2016-11-5)
+* Enhancements
+  * add `add_custom_arg` for custom arguments
+  * remove `raise` when no API key is provided at compile-time
+  
 ## 1.2.0 (2016-9-28)
 * Enhancements
-  * add `add_attachment` for attachements
+  * add `add_attachment` for attachments
   * bump `:poison` version to 2
 
 ## 1.1.0 (2016-8-30)

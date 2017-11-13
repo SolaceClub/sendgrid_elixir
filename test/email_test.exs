@@ -1,7 +1,5 @@
 defmodule SendGrid.Email.Test do
   use ExUnit.Case, async: true
-  doctest SendGrid.Email, import: true
-
   alias SendGrid.Email
 
   @email "test@email.com"
@@ -15,13 +13,13 @@ defmodule SendGrid.Email.Test do
   @tag :email
   test "add_to/2" do
     email = Email.add_to(Email.build(), @email)
-    assert email.to == [%{ email: @email }]
+    assert email.to == [%{email: @email}]
   end
 
   @tag :email
   test "add_to/3" do
     email = Email.add_to(Email.build(), @email, @name)
-    assert email.to == [%{ email: @email, name: @name }]
+    assert email.to == [%{email: @email, name: @name}]
   end
 
   @tag :email
@@ -31,31 +29,31 @@ defmodule SendGrid.Email.Test do
       |> Email.add_to(@email)
       |> Email.add_to(@email, @name)
 
-    assert email.to == [%{ email: @email }, %{ email: @email, name: @name }]
+    assert email.to == [%{email: @email}, %{email: @email, name: @name}]
   end
 
   @tag :email
   test "put_from/2" do
     email = Email.put_from(Email.build(), @email)
-    assert email.from == %{ email: @email }
+    assert email.from == %{email: @email}
   end
 
   @tag :email
   test "put_from/3" do
     email = Email.put_from(Email.build(), @email, @name)
-    assert email.from == %{ email: @email, name: @name }
+    assert email.from == %{email: @email, name: @name}
   end
 
   @tag :email
   test "add_cc/2" do
     email = Email.add_cc(Email.build(), @email)
-    assert email.cc == [%{ email: @email }]
+    assert email.cc == [%{email: @email}]
   end
 
   @tag :email
   test "add_cc/3" do
     email = Email.add_cc(Email.build(), @email, @name)
-    assert email.cc == [%{ email: @email, name: @name }]
+    assert email.cc == [%{email: @email, name: @name}]
   end
 
   @tag :email
@@ -65,19 +63,19 @@ defmodule SendGrid.Email.Test do
       |> Email.add_cc(@email)
       |> Email.add_cc(@email, @name)
 
-    assert email.cc == [%{ email: @email }, %{ email: @email, name: @name }]
+    assert email.cc == [%{email: @email }, %{email: @email, name: @name}]
   end
 
   @tag :email
   test "add_bcc/2" do
     email = Email.add_bcc(Email.build(), @email)
-    assert email.bcc == [%{ email: @email }]
+    assert email.bcc == [%{email: @email}]
   end
 
   @tag :email
   test "add_bcc/3" do
     email = Email.add_bcc(Email.build(), @email, @name)
-    assert email.bcc == [%{ email: @email, name: @name }]
+    assert email.bcc == [%{email: @email, name: @name}]
   end
 
   @tag :email
@@ -87,19 +85,19 @@ defmodule SendGrid.Email.Test do
       |> Email.add_bcc(@email)
       |> Email.add_bcc(@email, @name)
 
-    assert email.bcc == [%{ email: @email }, %{ email: @email, name: @name }]
+    assert email.bcc == [%{email: @email}, %{email: @email, name: @name}]
   end
 
   @tag :email
   test "put_reply_to/2" do
     email = Email.put_reply_to(Email.build(), @email)
-    assert email.reply_to == %{ email: @email }
+    assert email.reply_to == %{email: @email}
   end
 
   @tag :email
   test "put_reply_to/3" do
     email = Email.put_reply_to(Email.build(), @email, @name)
-    assert email.reply_to == %{ email: @email, name: @name}
+    assert email.reply_to == %{email: @email, name: @name}
   end
 
   @tag :email
@@ -113,14 +111,14 @@ defmodule SendGrid.Email.Test do
   test "put_text/2" do
     text = "Some Text"
     email = Email.put_text(Email.build(), text)
-    assert email.content == [%{ type: "text/plain", value: text }]
+    assert email.content == [%{type: "text/plain", value: text}]
   end
 
   @tag :email
   test "put_html/2" do
     html = "<p>Some Text</p>"
     email = Email.put_html(Email.build(), html)
-    assert email.content == [%{ type: "text/html", value: html }]
+    assert email.content == [%{type: "text/html", value: html}]
   end
 
   @tag :email
@@ -131,7 +129,7 @@ defmodule SendGrid.Email.Test do
       Email.build()
       |> Email.put_text(text)
       |> Email.put_html(html)
-    assert email.content == [%{ type: "text/plain", value: text }, %{ type: "text/html", value: html }]
+    assert email.content == [%{type: "text/plain", value: text}, %{type: "text/html", value: html}]
   end
 
   @tag :email
@@ -142,7 +140,7 @@ defmodule SendGrid.Email.Test do
       Email.build()
       |> Email.put_html(html)
       |> Email.put_text(text)
-    assert email.content == [%{ type: "text/plain", value: text }, %{ type: "text/html", value: html }]
+    assert email.content == [%{type: "text/plain", value: text}, %{type: "text/html", value: html}]
   end
 
   @tag :email
@@ -163,14 +161,38 @@ defmodule SendGrid.Email.Test do
   @tag :email
   test "add_substitution/3" do
     email = Email.add_substitution(Email.build(), "-someValue-", "Cool")
-    assert email.substitutions == %{ "-someValue-" => "Cool" }
+    assert email.substitutions == %{"-someValue-" => "Cool"}
   end
 
   @tag :email
   test "add_subtitution/3 x2" do
-    email = Email.add_substitution(Email.build(), "-someValue-", "Cool")
+    email =
+      Email.build()
+      |> Email.add_substitution("-someValue-", "Cool")
       |> Email.add_substitution("-newValue-", "Panda")
-    assert email.substitutions == %{ "-someValue-" => "Cool", "-newValue-" => "Panda" }
+    assert email.substitutions == %{"-someValue-" => "Cool", "-newValue-" => "Panda"}
+  end
+
+  test "add_custom_arg/3" do
+    email = Email.add_custom_arg(Email.build(), "unique_user_id", "abc123")
+    assert email.custom_args == %{"unique_user_id" => "abc123"}
+  end
+
+  test "add_custom_arg/3 x2" do
+    email =
+      Email.build()
+      |> Email.add_custom_arg("unique_user_id", "abc123")
+      |> Email.add_custom_arg("template_name", "welcome-user")
+    assert email.custom_args == %{"unique_user_id" => "abc123", "template_name" => "welcome-user"}
+  end
+
+  test "add_custom_arg/3 does not create duplicate keys" do
+    email =
+      Email.build()
+      |> Email.add_custom_arg("unique_user_id", "abc123")
+      |> Email.add_custom_arg("template_name", "welcome-user")
+      |> Email.add_custom_arg("template_name", "new_template")
+    assert email.custom_args == %{"unique_user_id" => "abc123", "template_name" => "new_template"}
   end
 
   @tag :email
@@ -191,14 +213,11 @@ defmodule SendGrid.Email.Test do
     |> SendGrid.Mailer.send()
   end
 
-
   describe "add_attachemnt/2" do
     @tag :email
     test "adds a single attachemnt" do
       attachment = %{content: "somebase64encodedstring", type: "image/jpeg", filename: "testing.jpg"}
-      email =
-        Email.build()
-        |> Email.add_attachment(attachment)
+      email = Email.add_attachment(Email.build(), attachment)
       assert email.attachments == [attachment]
       assert Enum.count(email.attachments) == 1
     end
@@ -212,6 +231,121 @@ defmodule SendGrid.Email.Test do
         |> Email.add_attachment(attachment2)
       assert email.attachments == [attachment1, attachment2]
       assert Enum.count(email.attachments) == 2
+    end
+  end
+
+  defmodule EmailView do
+    use Phoenix.View, root: "test/support/templates", namespace: SendGrid.Email.Test
+  end
+
+
+  describe "put_phoenix_layout/2" do
+    test "works with html layouts" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, "layout.html"})
+
+        assert result.__phoenix_layout__ == %{html: {SendGrid.Email.Test.EmailView, "layout.html"}}
+    end
+
+    test "works with text layouts" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, "layout.txt"})
+
+        assert result.__phoenix_layout__ == %{text: {SendGrid.Email.Test.EmailView, "layout.txt"}}
+    end
+
+    test "works with setting both a text and an html layout" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, "layout.txt"})
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, "layout.html"})
+
+      expected = %{
+        html: {SendGrid.Email.Test.EmailView, "layout.html"},
+        text: {SendGrid.Email.Test.EmailView, "layout.txt"}
+      }
+      assert result.__phoenix_layout__ == expected
+    end
+
+    test "works with an atom as a layout" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, :layout})
+
+      expected = %{
+        html: {SendGrid.Email.Test.EmailView, "layout.html"},
+        text: {SendGrid.Email.Test.EmailView, "layout.txt"}
+      }
+      assert result.__phoenix_layout__ == expected
+    end
+  end
+
+  test "put_phoenix_view/2" do
+    result =
+      Email.build()
+      |> Email.put_phoenix_view(SendGrid.Email.Test.EmailView)
+
+    assert %Email{__phoenix_view__: SendGrid.Email.Test.EmailView} = result
+  end
+
+  describe "put_phoenix_template/2" do
+    test "renders templates with explicit extensions" do
+      # HTML
+      result =
+        Email.build()
+        |> Email.put_phoenix_view(SendGrid.Email.Test.EmailView)
+        |> Email.put_phoenix_template("test.html", test: "awesome")
+      assert %Email{content: [%{type: "text/html", value: "<p>awesome</p>"}]} = result
+
+      # Text
+      result =
+        Email.build()
+        |> Email.put_phoenix_view(SendGrid.Email.Test.EmailView)
+        |> Email.put_phoenix_template("test.txt", test: "awesome")
+      assert %Email{content: [%{type: "text/plain", value: "awesome"}]} = result
+    end
+
+    test "renders templates with implicit extensions" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_template(:test, test: "awesome")
+
+      assert %Email{content: [%{type: "text/plain", value: "awesome"}, %{type: "text/html", value: "<p>awesome</p>"}]} = result
+    end
+
+    test "raises when a template doesn't exist for implicit extensions" do
+      assert_raise Phoenix.Template.UndefinedError, fn ->
+        Email.put_phoenix_template(Email.build(), :test2)
+      end
+    end
+
+    test "renders using the configured phoenix view" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_template("test.txt", test: "awesome")
+      assert %Email{content: [%{type: "text/plain", value: "awesome"}]} = result
+    end
+
+    test "renders in a text layout" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, :layout})
+        |> Email.put_phoenix_template("test.txt", test: "awesome")
+
+      assert Enum.at(result.content, 0).value =~ "TEXT LAYOUT"
+      assert Enum.at(result.content, 0).value =~ "awesome"
+    end
+
+    test "renders in an html layout" do
+      result =
+        Email.build()
+        |> Email.put_phoenix_layout({SendGrid.Email.Test.EmailView, :layout})
+        |> Email.put_phoenix_template("test.html", test: "awesome")
+
+      assert Enum.at(result.content, 0).value =~ "HTML LAYOUT"
+      assert Enum.at(result.content, 0).value =~ "awesome"
     end
   end
 end

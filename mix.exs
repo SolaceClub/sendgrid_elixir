@@ -3,32 +3,45 @@ defmodule SendGrid.Mixfile do
 
   def project do
     [app: :sendgrid,
-     version: "1.2.0",
-     elixir: "~> 1.2",
-     package: package,
-     description: description,
-     source_url: project_url,
-     homepage_url: project_url,
+     version: "1.7.0",
+     elixir: "~> 1.4",
+     package: package(),
+     compilers: compilers(Mix.env),
+     description: description(),
+     source_url: project_url(),
+     homepage_url: project_url(),
+     elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps(),
+     xref: [exclude: [Phoenix.View]]
+    ]
   end
 
   def application do
     [
-      applications: [
-        :logger,
-        :httpoison
+      extra_applications: [
+        :logger
       ]
     ]
   end
 
+  # Use Phoenix compiler depending on environment.
+  defp compilers(:test), do: [:phoenix] ++ Mix.compilers()
+  defp compilers(_), do: Mix.compilers()
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
+
   defp deps do
     [
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:httpoison, "~> 0.9.0"},
-      {:poison, "~> 2.0"}
+      {:earmark,      "~> 1.2",  only: :dev},
+      {:ex_doc,       "~> 0.16.2", only: :dev},
+      {:httpoison,    ">= 0.11.0"},
+      {:poison,       ">= 2.0.0 or >= 3.0.0"},
+      {:phoenix,      "~> 1.2", only: :test},
+      {:phoenix_html, "~> 2.9", only: :test}
     ]
   end
 
@@ -49,7 +62,7 @@ defmodule SendGrid.Mixfile do
       files: ["lib", "mix.exs", "LICENSE", "README.md"],
       maintainers: ["Alex Garibay"],
       licenses: ["MIT"],
-      links: %{"GitHub" => project_url}
+      links: %{"GitHub" => project_url()}
     ]
   end
 

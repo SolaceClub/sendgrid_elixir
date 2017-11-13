@@ -1,13 +1,25 @@
 # SendGrid
 
 A wrapper for SendGrid's API to create composable emails.
+Check the [docs](https://hexdocs.pm/sendgrid/) for complete usage.
+
+## Example
+
+```elixir
+SendGrid.Email.build()
+|> SendGrid.Email.add_to("test@email.com")
+|> SendGrid.Email.put_from("test2@email.com")
+|> SendGrid.Email.put_subject("Hello from Elixir")
+|> SendGrid.Email.put_text("Sent with Elixir")
+|> SendGrid.Mailer.send()
+```
 
 ## Installation
 
 Add the following code to your dependencies in your **`mix.exs`** file:
 
 ```elixir
-{:sendgrid, "~> 1.2.0"}
+{:sendgrid, "~> 1.7.0"}
 ```
 
 ## Configuration
@@ -27,59 +39,63 @@ config :sendgrid,
   sandbox_enable: true
 ```
 
+Add `:sendgrid` to your list of applications if using Elixir 1.3 or lower.
 
-
-Add `:sendgrid` to your list of applications
 ```elixir
 defp application do
   [applications: [:sendgrid]]
 end
 ```
 
-## Usage
+## Phoenix Views
 
-Check the [docs](https://hexdocs.pm/sendgrid/) for complete usage.
+You can use Phoenix Views to set your HTML and text content of your emails. You just have 
+to provide a view module and template name and you're good to go! Additionally, you can set 
+a layout to render the view in with `SendGrid.Email.put_phoenix_layout/2`. See `SendGrid.Email.put_phoenix_template/3` 
+for complete usage.
 
-### Simple Text Email
+### Examples
 
 ```elixir
-alias SendGrid.{Mailer, Email}
+import SendGrid.Email
 
-email = 
-  Email.build()
-  |> Email.put_from("test@email.com")
-  |> Email.add_to("test2@email.com")
-  |> Email.put_subject("Hello From Elixir")
-  |> Email.put_text("Sent from Elixir!")
-  
-Mailer.send(email)
+# Using an HTML template
+%SendGrid.Email{}
+|> put_phoenix_view(MyApp.Web.EmailView)
+|> put_phoenix_template("welcome_email.html", user: user)
+
+# Using a text template
+%SendGridEmail{}
+|> put_phoenix_view(MyApp.Web.EmailView)
+|> put_phoenix_template("welcome_email.txt", user: user)
+
+# Using both an HTML and text template
+%SendGrid.Email{}
+|> put_phoenix_view(MyApp.Web.EmailView)
+|> put_phoenix_template(:welcome_email, user: user)
+
+
+# Setting the layout
+%SendGrid.Email{}
+|> put_phoenix_layout({MyApp.Web.EmailView, :layout})
+|> put_phoenix_view(MyApp.Web.EmailView)
+|> put_phoenix_template(:welcome_email, user: user)
 ```
 
-### Simple HTML Email
+### Using a Default Phoenix View
+
+You can set a default Phoenix View to use for rendering templates. Just set the `:phoenix_view` config value
 
 ```elixir
-alias SendGrid.{Mailer, Email}
-
-email = 
-  Email.build()
-  |> Email.put_from("test@email.com")
-  |> Email.add_to("test2@email.com")
-  |> Email.put_subject("Hello From Elixir")
-  |> Email.put_html("<html><body><p>Sent from Elixir!</p></body></html>")
-  
-Mailer.send(email)
+config :sendgrid,
+  phoenix_view: MyApp.Web.EmailView
 ```
 
-### Using a Predefined Template
+### Using a Default Layout
+
+You can set a default layout to render your view in. Set the `:phoenix_layout` config value.
 
 ```elixir
-alias SendGrid.{Mailer, Email}
-
-email = 
-  Email.build()
-  |> Email.put_template("the_template_id")
-  |> Email.add_substitution("-foo-", "bar")
-  |> Email.put_html("<span>Some Text</span>")
-  
-Mailer.send(email)
+config :sendgrid,
+  phoenix_layout: {MyApp.Web.EmailView, :layout}
 ```

@@ -1,34 +1,38 @@
 defmodule SendGrid do
   @moduledoc """
-  Base module for interacting with SendGrid's API. A configured API key must
-  be provided in your applications project's configuration.
-
+  Interface to SendGrid's API.
+  
   ## Configuration
 
-  You must provide a configuration which includes your `api_key`.
+  A configuration key is expected with a working SendGrid API key.
 
-  ```
-  config :sendgrid,
-    api_key: "sendgrid_api_key"
-  ```
+      config :sendgrid,
+        api_key: "sendgrid_api_key"
+
+  ## Usage
+
+  Most usage with this library will be with composing transactional emails. Refer to `SendGrid.Email` for full 
+  documentation and usage.
+  
   """
 
   use HTTPoison.Base
 
   @api_url "https://api.sendgrid.com"
 
-  if !Application.get_env(:sendgrid, :api_key), do: raise "SendGrid is not configured."
-
   defp process_url(url) do
     @api_url <> url
   end
 
+  defp api_key() do
+    Application.get_env(:sendgrid, :api_key)
+  end
+
   # Default headers to be sent.
-  defp base_headers do
-     api_key = Application.get_env(:sendgrid, :api_key)
+  defp base_headers() do
      %{
        "Content-Type" => "application/json",
-       "Authorization" => "Bearer #{api_key}"
+       "Authorization" => "Bearer #{api_key()}"
      }
   end
 
@@ -41,7 +45,7 @@ defmodule SendGrid do
       request_headers
       |> Enum.into(%{})
 
-    Map.merge(base_headers, headers)
+    Map.merge(base_headers(), headers)
     |> Enum.into([])
   end
 
