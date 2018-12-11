@@ -9,9 +9,9 @@ defmodule SendGrid.Template.Version do
     template_id: nil,
     active: nil,
     name: nil,
-    html_content: nil,
-    plain_content: nil,
-    subject: nil,
+    html_content: "",
+    plain_content: "",
+    subject: "",
     updated_at: nil
   ]
 
